@@ -20,7 +20,10 @@ EAPER_HOST = os.getenv('EAPER_HOST')
 EAPER_PORT = int(os.getenv('EAPER_PORT'))
 
 @router.post('/send')
-async def send (message: str = Form(...)):
+async def send (
+  device_list: str = Form(...),
+  message: str = Form(...)
+):
   client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
   client_socket.connect((EAPER_HOST, EAPER_PORT))
   choice = message
@@ -48,9 +51,9 @@ async def send (message: str = Form(...)):
       for value in values:
         table += f'{value},'
 
-    client_socket.send(f'C8:F0:9E:EC:78:6C {choice} {table[:-1]}\r'.encode())
+    client_socket.send(f'{device_list}_{choice}_{table[:-1]}\r'.encode())
   elif choice == 'clear':
-    client_socket.send(f'C8:F0:9E:EC:78:6C {choice} \r'.encode())
+    client_socket.send(f'{device_list}_{choice}_\r'.encode())
   else:
-    client_socket.send(f'C8:F0:9E:EC:78:6C text {choice}\r'.encode())
+    client_socket.send(f'{device_list}_text_{choice}\r'.encode())
   client_socket.close()
