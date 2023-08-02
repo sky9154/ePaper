@@ -4,8 +4,11 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 from dotenv import load_dotenv
+from datetime import datetime
+import pandas as pd
 import os.path
 import os
+import re
 
 
 load_dotenv()
@@ -48,7 +51,30 @@ def get ():
 
     values = result.get('values', [addfilterviewrequest])
 
-    return values if values else []
+    if values != []:
+      for index, result in enumerate(values[1:], start=1):
+        data_time = re.sub(r'上午|下午', '', result[0])
+        data_time = datetime.strptime(data_time, '%Y/%m/%d  %H:%M:%S')
+        data_time = data_time.strftime('%m-%d')
+        values[index][0] = data_time
+
+      df = pd.DataFrame(values[1:])
+      df.columns = values[0]
+      df = df[['時間戳記', '學校 / 使用機關', '單位 / 系所', '使用者 / 老師 姓名']]
+      df = df.sort_values(['時間戳記'], ascending=False)
+      df = df.head(5)
+
+      table = ''
+      for title in ['日期', '使用機關', '單位', '使用者']:
+        table += f'{title},'
+
+      for values in df.values.tolist():
+        for value in values:
+          table += f'{value},'
+
+      return table
+    else:
+      return []
   except HttpError as err:
     print(err)
 

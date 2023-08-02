@@ -10,12 +10,6 @@
 html,
 body {
   font-family: 'Noto Sans TC', 'Roboto', sans-serif;
-  overflow: hidden;
-}
-
-html,
-#root {
-  height: 100%;
 }
 
 input[type='password']::-ms-reveal,
