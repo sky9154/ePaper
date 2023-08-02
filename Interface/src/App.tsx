@@ -2,7 +2,7 @@ import { FC } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { zhHK } from '@mui/x-date-pickers/locales';
-import Home from './components/Home';
+import Home from './pages/Home';
 
 
 const theme = createTheme({
@@ -10,13 +10,12 @@ const theme = createTheme({
     fontFamily: [
       'Noto Sans TC',
       'Roboto',
-      'sans-serif',
+      'sans-serif'
     ].join(',')
   }
 }, zhHK);
 
 const App: FC = () => {
-
   return (
     <ThemeProvider theme={theme}>
       <Toaster />

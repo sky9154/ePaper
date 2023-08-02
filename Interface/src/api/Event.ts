@@ -1,18 +1,24 @@
 import toast from 'react-hot-toast';
 
 
-const save = async (devices: string, date: string, message: string) => {
+const create = async (data: {
+  devices: string,
+  date_time: string,
+  mode: string,
+  message: string
+}) => {
   const url = `http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/api/event/create`;
-  
+
   const requestOptions = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     },
     body: new URLSearchParams({
-      devices: devices,
-      date_time: date,
-      message: message
+      devices: data.devices,
+      date_time: data.date_time,
+      mode: data.mode,
+      message: data.message
     })
   };
 
@@ -22,7 +28,7 @@ const save = async (devices: string, date: string, message: string) => {
 }
 
 const Event = {
-  save
+  create
 }
 
 export default Event;
