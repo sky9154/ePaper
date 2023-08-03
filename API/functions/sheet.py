@@ -74,8 +74,8 @@ def get ():
 
       return table
     else:
-      return []
+      return ''
   except HttpError as err:
     print(err)
 
-    return []
+    return ''

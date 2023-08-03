@@ -9,11 +9,13 @@ router = APIRouter()
 async def create (
   devices: str = Form(...),
   date_time: str = Form(...),
-  message: str = Form(...)
+  mode: str = Form(...),
+  message: str = Form(default='')
 ):
   await event.create({
     'devices': devices,
     'datetime': datetime.strptime(date_time, '%Y-%m-%d %H:%M:%S'),
+    'mode': mode,
     'message': message,
     'state': False
   })

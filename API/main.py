@@ -36,8 +36,6 @@ PORT = int(os.getenv('PORT'))
 
 loop_thread = threading.Thread(target=asyncio.run, args=(fevent.loop(),))
 
-# 啟動執行緒
-
 if __name__ == '__main__':
   loop_thread.start()
   uvicorn.run(app, host=HOST, port=PORT)

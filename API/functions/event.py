@@ -6,6 +6,7 @@ import paho.mqtt.client as mqtt
 import functions.mongodb as mongodb
 import functions.sheet as sheet
 import functions.device as device
+import json
 import os
 
 
@@ -40,33 +41,30 @@ async def loop ():
       
       for event in events:
         devices = await device.get_devices(event['devices'])
+        mode = event['mode']
         message = event['message']
 
-        print('裝置: ', devices)
-        print('訊息: ', message)
-
-        await send(devices, message)
+        await send(devices, mode, message)
 
     sleep(1)
 
 
-async def send (devices, message):
+async def send (devices: str, mode: str, message: str):
   '''
   發送消息
   '''
   
   client = mqtt.Client()
   client.connect(MQTT_HOST, MQTT_PORT)
-  choice = message
-
-  if choice == 'sheet':
-    print(sheet.get()[:-1])
-    data = f'{devices}_{choice}_{sheet.get()[:-1]}'
-    
-  elif choice == 'clear':
-    data = f'{devices}_{choice}_'
-  else:
-    data = f'{devices}_text_{choice}'
 
   sleep(1)
-  client.publish('ePaper/send', data)
+
+  payload = {
+    'devices': devices,
+    'mode': mode,
+    'message': sheet.get()[:-1] if mode == 'sheet' else message 
+  }
+
+  payload_json = json.dumps(payload, ensure_ascii=False).encode('utf8')
+
+  client.publish('ePaper/send', payload_json)
