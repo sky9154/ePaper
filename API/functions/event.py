@@ -10,7 +10,6 @@ import json
 import os
 
 
-
 router = APIRouter()
 
 load_dotenv()
@@ -38,9 +37,8 @@ async def loop ():
     if (events != [] and events != event_list):
       event_list = events
 
-      
       for event in events:
-        devices = await device.get_devices(event['devices'])
+        devices = await device.get_mac_id(event['devices'])
         mode = event['mode']
         message = event['message']
 
@@ -53,7 +51,7 @@ async def send (devices: str, mode: str, message: str):
   '''
   發送消息
   '''
-  
+
   client = mqtt.Client()
   client.connect(MQTT_HOST, MQTT_PORT)
 

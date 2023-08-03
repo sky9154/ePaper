@@ -22,7 +22,7 @@ const create = async (data: {
     })
   };
 
-  fetch(url, requestOptions).then(() => {
+  await fetch(url, requestOptions).then(() => {
     toast.success('建立成功!');
   });
 }
