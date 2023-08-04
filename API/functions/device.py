@@ -24,9 +24,9 @@ async def get_device (name: str):
   return [] if (result == []) else result[0]
 
 
-async def get_mac_id (device_list: str):
+async def get_mac (device_list: str):
   '''
-  裝置名稱轉 Mac ID
+  裝置名稱轉 Mac Address
   '''
 
   device_list = device_list.split(',')
@@ -34,7 +34,7 @@ async def get_mac_id (device_list: str):
 
   for device in device_list:
     result = await get_device(device)
-    devices += f'{result["macId"]},'
+    devices += f'{result["macAddress"]},'
 
   return '' if devices == '' else devices[:-1]
 
@@ -55,13 +55,13 @@ async def remove (name: str):
   await mongodb.delete('device', {'name': name})
 
 
-async def update (name: str, device: dict):
+async def update (mac: str, device: dict):
   '''
   編輯裝置
   '''
 
   await mongodb.update('device', { 
-    'name': name 
+    'macAddress': mac 
   }, { 
     '$set': device
   })
@@ -77,11 +77,11 @@ async def check_name (name: str):
   return False if (result == []) else True
 
 
-async def check_mac_id (mac_id: str):
+async def check_mac (mac: str):
   '''
-  檢查 Mac ID 是否存在
+  檢查 Mac Address 是否存在
   '''
 
-  result = await mongodb.find('device', { 'macId': mac_id })
+  result = await mongodb.find('device', { 'macAddress': mac })
 
   return False if (result == []) else True

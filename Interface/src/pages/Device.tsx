@@ -13,7 +13,7 @@ import Device from '../api/Device';
 type DeviceType = {
   id: number,
   name: string,
-  macId: string
+  macAddress: string
 }
 
 const DeviceGrid: FC = () => {
@@ -36,7 +36,7 @@ const DeviceGrid: FC = () => {
 
   const editDevice = (newRow: DeviceType, oldRow: DeviceType) => {
     if (JSON.stringify(newRow) !== JSON.stringify(oldRow)) {
-      Device.update(oldRow.name, newRow.name, oldRow.macId, newRow.macId);
+      Device.update(oldRow.macAddress, newRow.name);
     }
 
     return newRow;
@@ -45,7 +45,7 @@ const DeviceGrid: FC = () => {
   const field = useMemo<GridColDef<DeviceType>[]>(
     () => [
       { field: 'name', headerName: '裝置名稱', width: 150, editable: true },
-      { field: 'macId', headerName: 'Mac ID', width: 250, editable: true },
+      { field: 'macAddress', headerName: 'Mac 地址', width: 250 },
       {
         field: 'actions',
         type: 'actions',

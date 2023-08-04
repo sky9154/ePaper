@@ -13,7 +13,7 @@ import Event from '../../api/Event';
 
 type DeviceType = {
   name: string,
-  macId: string
+  macAddress: string
 }
 
 const Create: FC = () => {

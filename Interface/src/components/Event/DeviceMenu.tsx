@@ -7,7 +7,7 @@ import FormControl from '@mui/material/FormControl';
 
 type DeviceType = {
   name: string,
-  macId: string
+  macAddress: string
 }
 
 interface DeviceMenuProps {

@@ -38,7 +38,7 @@ async def loop ():
       event_list = events
 
       for event in events:
-        devices = await device.get_mac_id(event['devices'])
+        devices = await device.get_mac(event['devices'])
         mode = event['mode']
         message = event['message']
 

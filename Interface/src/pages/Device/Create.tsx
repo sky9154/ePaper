@@ -11,12 +11,12 @@ const Create: FC = () => {
 
     const data = new FormData(event.currentTarget);
     const name = data.get('name');
-    const macId = data.get('macId');
+    const mac = data.get('mac');
 
-    if (name || macId) {
+    if (name || mac) {
       console.table({
         '裝置名稱': name,
-        'Mac ID': macId
+        'Mac Address': mac
       });
     }
   }
@@ -54,9 +54,9 @@ const Create: FC = () => {
             fullWidth
           />
           <TextField
-            label="Mac ID"
-            id="macId"
-            name="macId"
+            label="Mac Address"
+            id="mac"
+            name="mac"
             autoComplete="off"
             fullWidth
           />
