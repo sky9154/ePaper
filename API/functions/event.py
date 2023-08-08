@@ -84,14 +84,14 @@ async def loop ():
       event_list = events
 
       for event in events:
-        event_id = event['event_id']
+        event_id = event['id']
         devices = await device.get_mac(event['devices'])
         mode = event['mode']
         message = event['message']
 
         await send(devices, mode, message)
 
-        remove(event_id)
+        await remove(event_id)
 
     sleep(1)
 

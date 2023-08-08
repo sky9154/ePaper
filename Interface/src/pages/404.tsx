@@ -11,16 +11,16 @@ const ErrorPage: FC = () => {
     <Box
       display="flex"
       p={4}
-      height='100%'
-      alignItems='center'
-      flexDirection='column'
-      justifyContent='center'
+      height="100%"
+      alignItems="center"
+      flexDirection="column"
+      justifyContent="center"
     >
       <Box maxWidth={350}>
         <img
-          src='/static/images/illustration/error-page.svg'
-          width='100%'
-          alt='Error 404'
+          src="/static/images/illustration/error-page.svg"
+          width="100%"
+          alt="Error 404"
         />
       </Box>
       <H1
