@@ -10,8 +10,8 @@ const loadable = (Component: LazyExoticComponent<FC>) => (props: any) => (
 );
 
 const Home = loadable(lazy(() => import('./pages/Home')));
+const EventGrid = loadable(lazy(() => import('./pages/Event/Grid')));
 const EventCreate = loadable(lazy(() => import('./pages/Event/Create')));
-const DeviceCreate = loadable(lazy(() => import('./pages/Device/Create')));
 const DeviceGrid = loadable(lazy(() => import('./pages/Device/Grid')));
 const Error = loadable(lazy(() => import('./pages/404')));
 
@@ -25,17 +25,17 @@ const routes = [
       </AppBar>
     )
   }, {
+    path: '/event',
+    element: (
+      <AppBar>
+        <EventGrid />
+      </AppBar>
+    )
+  }, {
     path: '/event/create',
     element: (
       <AppBar>
         <EventCreate />
-      </AppBar>
-    )
-  }, {
-    path: '/device/create',
-    element: (
-      <AppBar>
-        <DeviceCreate />
       </AppBar>
     )
   }, {

@@ -24,7 +24,6 @@ const AppBar = ({ children }: Props) => {
         direction="column"
         justifyContent="center"
         alignItems="stretch"
-        spacing={2}
         p={4}
       >
         <Stack
@@ -42,9 +41,9 @@ const AppBar = ({ children }: Props) => {
           </Button>
           <Button
             variant="contained"
-            onClick={() => navigate('/device/create')}
+            onClick={() => navigate('/event')}
           >
-            新增裝置
+            事件管理
           </Button>
           <Button
             variant="contained"
@@ -53,7 +52,7 @@ const AppBar = ({ children }: Props) => {
             新增排程
           </Button>
         </Stack>
-        <Box height="500px">
+        <Box>
           {children}
         </Box>
       </Stack>

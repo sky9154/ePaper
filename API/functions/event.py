@@ -22,7 +22,7 @@ async def get () -> list:
   取得事件
   '''
   
-  events = await mongodb.find('event', { })
+  events = await mongodb.find('event', { 'state': True })
 
   return events
 
