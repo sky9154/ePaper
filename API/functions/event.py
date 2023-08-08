@@ -17,12 +17,58 @@ load_dotenv()
 MQTT_HOST = os.getenv('MQTT_HOST')
 MQTT_PORT = int(os.getenv('MQTT_PORT'))
 
-async def create (event: dict):
+async def get () -> list:
+  '''
+  取得事件
+  '''
+  
+  events = await mongodb.find('event', { })
+
+  return events
+
+
+async def check (event_id: str) -> bool:
+  '''
+  檢查事件是否存在
+  '''
+
+  result = await mongodb.find('event', { 'id': event_id })
+
+  return False if (result == []) else True
+
+
+async def create (event: dict) -> None:
   '''
   建立事件
   '''
 
   await mongodb.insert('event', event)
+
+
+async def remove (event_id: str) -> None:
+  '''
+  刪除事件
+  '''
+
+  await mongodb.update('event', { 
+    'id': event_id
+  }, { 
+    '$set': {
+      'state': False
+    }
+  })
+
+
+async def update (event_id: str, event: dict) -> None:
+  '''
+  編輯事件
+  '''
+
+  await mongodb.update('event', { 
+    'id': event_id
+  }, { 
+    '$set': event
+  })
 
 
 async def loop ():
@@ -38,16 +84,19 @@ async def loop ():
       event_list = events
 
       for event in events:
+        event_id = event['event_id']
         devices = await device.get_mac(event['devices'])
         mode = event['mode']
         message = event['message']
 
         await send(devices, mode, message)
 
+        remove(event_id)
+
     sleep(1)
 
 
-async def send (devices: str, mode: str, message: str):
+async def send (devices: str, mode: str, message: str) -> None:
   '''
   發送消息
   '''

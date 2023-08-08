@@ -13,7 +13,7 @@ client = pymongo.MongoClient([f'{DB_HOST}:{DB_PORT}'])
 db = client['ePaper']
 
 
-async def insert (collection_name: str, data: dict):
+async def insert (collection_name: str, data: dict) -> None:
   '''
   新增資料
   '''
@@ -36,7 +36,7 @@ async def find (collection_name: str, filter: dict) -> list:
   return data
 
 
-async def update (collection_name: str, query: dict, new_values: dict):
+async def update (collection_name: str, query: dict, new_values: dict) -> None:
   '''
   更新資料
   '''
@@ -45,7 +45,7 @@ async def update (collection_name: str, query: dict, new_values: dict):
   collection.update_one(query, new_values)
 
 
-async def delete (collection_name: str, query: dict):
+async def delete (collection_name: str, query: dict) -> None:
   '''
   刪除資料
   '''
