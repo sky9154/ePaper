@@ -1,5 +1,6 @@
 import { FC, lazy, LazyExoticComponent, Suspense } from 'react';
 import LoadingScreen from './components/LoadingScreen';
+import AppBar from './components/Layouts/AppBar';
 
 
 const loadable = (Component: LazyExoticComponent<FC>) => (props: any) => (
@@ -11,7 +12,7 @@ const loadable = (Component: LazyExoticComponent<FC>) => (props: any) => (
 const Home = loadable(lazy(() => import('./pages/Home')));
 const EventCreate = loadable(lazy(() => import('./pages/Event/Create')));
 const DeviceCreate = loadable(lazy(() => import('./pages/Device/Create')));
-const Device = loadable(lazy(() => import('./pages/Device')));
+const DeviceGrid = loadable(lazy(() => import('./pages/Device/Grid')));
 const Error = loadable(lazy(() => import('./pages/404')));
 
 const routes = [
@@ -19,22 +20,30 @@ const routes = [
     exact: true,
     path: '/',
     element: (
-      <Home />
+      <AppBar>
+        <Home />
+      </AppBar>
     )
   }, {
     path: '/event/create',
     element: (
-      <EventCreate />
+      <AppBar>
+        <EventCreate />
+      </AppBar>
     )
   }, {
     path: '/device/create',
     element: (
-      <DeviceCreate />
+      <AppBar>
+        <DeviceCreate />
+      </AppBar>
     )
   }, {
     path: '/device',
     element: (
-      <Device />
+      <AppBar>
+        <DeviceGrid />
+      </AppBar>
     )
   }, {
     path: '*',

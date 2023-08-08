@@ -7,7 +7,7 @@ import {
   GridToolbar
 } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
-import Device from '../api/Device';
+import Device from '../../api/Device';
 
 
 type DeviceType = {
@@ -16,7 +16,7 @@ type DeviceType = {
   macAddress: string
 }
 
-const DeviceGrid: FC = () => {
+const Grid: FC = () => {
   const [devices, setDevices] = useState<DeviceType[]>([]);
 
   useEffect(() => {
@@ -25,8 +25,8 @@ const DeviceGrid: FC = () => {
 
   const deleteDevice = useCallback(
     (name: string) => () => {
-      setTimeout(() => {
-        Device.remove(name);
+      setTimeout(async () => {
+        await Device.remove(name);
 
         setDevices((devices) => devices.filter((device) => device.name !== name));
       });
@@ -34,9 +34,9 @@ const DeviceGrid: FC = () => {
     []
   );
 
-  const editDevice = (newRow: DeviceType, oldRow: DeviceType) => {
+  const editDevice = async (newRow: DeviceType, oldRow: DeviceType) => {
     if (JSON.stringify(newRow) !== JSON.stringify(oldRow)) {
-      Device.update(oldRow.macAddress, newRow.name);
+      await Device.update(oldRow.macAddress, newRow.name);
     }
 
     return newRow;
@@ -66,45 +66,37 @@ const DeviceGrid: FC = () => {
   );
 
   return (
-    <Box sx={{
-      height: '100vh',
-      width: '100%',
-      display: 'flex',
-      justifyContent: "center",
-      alignItems: 'center'
-    }}>
-      <Box
+    <Box
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        width: {
+          xs: '100%',
+          sm: '100%',
+          md: '650px'
+        },
+        borderRadius: 4,
+        boxShadow: {
+          md: '0 4px 8px 0 #BDC9D7'
+        }
+      }}>
+      <DataGrid
+        columns={field}
+        rows={devices}
+        editMode="row"
+        slots={{
+          toolbar: GridToolbar
+        }}
+        processRowUpdate={editDevice}
         sx={{
-          display: 'flex',
-          alignItems: 'center',
-          width: {
-            xs: '100%',
-            sm: '100%',
-            md: '650px'
-          },
+          p: 4,
+          width: '100%',
           borderRadius: 4,
-          boxShadow: {
-            md: '0 4px 8px 0 #BDC9D7'
-          }
-        }}>
-        <DataGrid
-          columns={field}
-          rows={devices}
-          editMode="row"
-          slots={{
-            toolbar: GridToolbar
-          }}
-          processRowUpdate={editDevice}
-          sx={{
-            p: 4,
-            width: '100%',
-            borderRadius: 4,
-            fontSize: '16px'
-          }} />
-      </Box>
+          fontSize: '16px'
+        }} />
     </Box>
   );
 }
 
 
-export default DeviceGrid;
+export default Grid;

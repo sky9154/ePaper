@@ -80,41 +80,33 @@ const Create: FC = () => {
   }
 
   return (
-    <Box sx={{
-      height: '100vh',
-      width: '100%',
-      display: 'flex',
-      justifyContent: "center",
-      alignItems: "center"
-    }}>
-      <Box
-        component="form"
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          borderRadius: 4,
-          boxShadow: '0 4px 8px 0 #BDC9D7'
-        }}
-        onSubmit={send}>
-        <Stack
-          direction="column"
-          justifyContent="center"
-          alignItems="stretch"
-          width="300px"
-          spacing={2}
-          p={4}
-        >
-          <DeviceMenu
-            deviceMenu={deviceMenu}
-            devices={devices}
-            setDevices={setDevices}
-          />
-          <DateTime dateTime={dateTime} setDateTime={setDateTime} />
-          <Mode mode={mode} setMode={setMode} />
-          {Form({ mode })}
-          <SubmitButton />
-        </Stack>
-      </Box>
+    <Box
+      component="form"
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        borderRadius: 4,
+        boxShadow: '0 4px 8px 0 #BDC9D7'
+      }}
+      onSubmit={send}>
+      <Stack
+        direction="column"
+        justifyContent="center"
+        alignItems="stretch"
+        width="300px"
+        spacing={2}
+        p={4}
+      >
+        <DeviceMenu
+          deviceMenu={deviceMenu}
+          devices={devices}
+          setDevices={setDevices}
+        />
+        <DateTime dateTime={dateTime} setDateTime={setDateTime} />
+        <Mode mode={mode} setMode={setMode} />
+        {Form({ mode })}
+        <SubmitButton />
+      </Stack>
     </Box>
   );
 }
