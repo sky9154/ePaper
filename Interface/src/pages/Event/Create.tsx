@@ -70,7 +70,7 @@ const Create: FC = () => {
     }
 
     if (deviceList || date || mode || message) {
-      await Event.create({
+      Event.create({
         devices: deviceList as string,
         date_time: date as string,
         mode: mode as string,
@@ -93,7 +93,7 @@ const Create: FC = () => {
         direction="column"
         justifyContent="center"
         alignItems="stretch"
-        width="300px"
+        width="100%"
         spacing={2}
         p={4}
       >

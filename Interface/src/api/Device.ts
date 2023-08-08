@@ -7,14 +7,14 @@ type DeviceType = {
   macAddress: string
 }
 
-const get = async (setMenu: (value: DeviceType[]) => void) => {
+const get = (setMenu: (value: DeviceType[]) => void) => {
   const url = `http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/api/device/get`;
 
   const requestOptions = {
     method: 'GET'
   };
 
-  await fetch(url, requestOptions).then(async (response: Response) => {
+  fetch(url, requestOptions).then(async (response: Response) => {
     const result = await response.json();
 
     if (response.ok) {
@@ -25,7 +25,7 @@ const get = async (setMenu: (value: DeviceType[]) => void) => {
   });
 }
 
-const create = async (name: string, mac: string) => {
+const create = (name: string, mac: string) => {
   const url = `http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/api/device/create`;
 
   const requestOptions = {
@@ -39,7 +39,7 @@ const create = async (name: string, mac: string) => {
     })
   };
 
-  await fetch(url, requestOptions).then(async (response: Response) => {
+  fetch(url, requestOptions).then(async (response: Response) => {
     if (response.ok) {
       toast.success('新增成功!');
     } else {
@@ -49,7 +49,7 @@ const create = async (name: string, mac: string) => {
   });
 }
 
-const remove = async (name: string) => {
+const remove = (name: string) => {
   const url = `http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/api/device/remove`;
 
   const requestOptions = {
@@ -62,14 +62,14 @@ const remove = async (name: string) => {
     })
   };
 
-  await fetch(url, requestOptions).then(async (response: Response) => {
+  fetch(url, requestOptions).then(async (response: Response) => {
     if (response.ok) {
       toast.success('刪除成功!');
     }
   });
 }
 
-const update = async (mac: string, name: string) => {
+const update = (mac: string, name: string) => {
   const url = `http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/api/device/update`;
 
   const requestOptions = {
@@ -83,7 +83,7 @@ const update = async (mac: string, name: string) => {
     })
   };
 
-  await fetch(url, requestOptions).then(async (response: Response) => {
+  fetch(url, requestOptions).then(async (response: Response) => {
     if (response.ok) {
       toast.success('編輯成功!');
     } else {
