@@ -3,6 +3,7 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import TextField from '@mui/material/TextField';
 import SubmitButton from '../../components/SubmitButton';
+import Device from '../../api/Device';
 
 
 const Create: FC = () => {
@@ -19,50 +20,44 @@ const Create: FC = () => {
         'Mac Address': mac
       });
     }
+    
+    await Device.create(name as string, mac as string);
   }
 
   return (
-    <Box sx={{
-      height: '100vh',
-      width: '100%',
-      display: 'flex',
-      justifyContent: "center",
-      alignItems: "center"
-    }}>
-      <Box
-        component="form"
-        sx={{
-          display: 'flex',
-          alignItems: 'center',
-          borderRadius: 4,
-          boxShadow: '0 4px 8px 0 #BDC9D7'
-        }}
-        onSubmit={send}>
-        <Stack
-          direction="column"
-          justifyContent="center"
-          alignItems="stretch"
-          width="300px"
-          spacing={2}
-          p={4}
-        >
-          <TextField
-            label="裝置名稱"
-            id="name"
-            name="name"
-            autoComplete="off"
-            fullWidth
-          />
-          <TextField
-            label="Mac Address"
-            id="mac"
-            name="mac"
-            autoComplete="off"
-            fullWidth
-          />
-          <SubmitButton />
-        </Stack>
-      </Box>
+    <Box
+      component="form"
+      sx={{
+        display: 'flex',
+        alignItems: 'center',
+        borderRadius: 4,
+        boxShadow: '0 4px 8px 0 #BDC9D7'
+      }}
+      onSubmit={send}>
+      <Stack
+        direction="column"
+        justifyContent="center"
+        alignItems="stretch"
+        width="300px"
+        spacing={2}
+        p={4}
+      >
+        <TextField
+          label="裝置名稱"
+          id="name"
+          name="name"
+          autoComplete="off"
+          fullWidth
+        />
+        <TextField
+          label="Mac Address"
+          id="mac"
+          name="mac"
+          autoComplete="off"
+          fullWidth
+        />
+        <SubmitButton />
+      </Stack>
     </Box>
   );
 }

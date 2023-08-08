@@ -12,7 +12,7 @@ async def get ():
 
 
 @router.post('/create')
-async def create (name: str = Form(...), mac: str = Form(...)):
+async def create (name: str = Form(default=''), mac: str = Form(...)):
   if await device.check_name(name):
     raise HTTPException(400, '裝置名稱已存在')
 
@@ -39,7 +39,6 @@ async def update (
 ):
   if await device.check_name(name):
     raise HTTPException(400, '裝置名稱已存在')
-  print(mac, name)
   
   await device.update(mac, {
     'name': name,

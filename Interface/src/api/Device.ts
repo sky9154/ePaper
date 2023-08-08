@@ -4,7 +4,7 @@ import toast from 'react-hot-toast';
 type DeviceType = {
   id: number,
   name: string,
-  macId: string
+  macAddress: string
 }
 
 const get = async (setMenu: (value: DeviceType[]) => void) => {
@@ -22,6 +22,30 @@ const get = async (setMenu: (value: DeviceType[]) => void) => {
     }
   }).catch(() => {
     toast.error('未取得裝置!');
+  });
+}
+
+const create = async (name: string, mac: string) => {
+  const url = `http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/api/device/create`;
+
+  const requestOptions = {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded'
+    },
+    body: new URLSearchParams({
+      name: name,
+      mac: mac
+    })
+  };
+
+  await fetch(url, requestOptions).then(async (response: Response) => {
+    if (response.ok) {
+      toast.success('新增成功!');
+    } else {
+      const error = await response.text();
+      toast.error(JSON.parse(error).detail);
+    }
   });
 }
 
@@ -45,7 +69,7 @@ const remove = async (name: string) => {
   });
 }
 
-const update = async (oldName: string, newName: string, oldMacId: string, newMacId: string) => {
+const update = async (mac: string, name: string) => {
   const url = `http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/api/device/update`;
 
   const requestOptions = {
@@ -54,17 +78,15 @@ const update = async (oldName: string, newName: string, oldMacId: string, newMac
       'Content-Type': 'application/x-www-form-urlencoded'
     },
     body: new URLSearchParams({
-      old_name: oldName,
-      new_name: newName,
-      old_mac_id: oldMacId,
-      new_mac_id: newMacId
+      mac: mac,
+      name: name
     })
   };
 
   await fetch(url, requestOptions).then(async (response: Response) => {
     if (response.ok) {
       toast.success('編輯成功!');
-    }else {
+    } else {
       const error = await response.text();
       toast.error(JSON.parse(error).detail);
     }
@@ -73,6 +95,7 @@ const update = async (oldName: string, newName: string, oldMacId: string, newMac
 
 const Device = {
   get,
+  create,
   remove,
   update
 }
