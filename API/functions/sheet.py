@@ -18,7 +18,7 @@ SHEET_ID = os.getenv('SHEET_ID')
 
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
 
-def get ():
+def get () -> str:
   creds = None
 
   if os.path.exists(os.path.join('key', 'token.json')):

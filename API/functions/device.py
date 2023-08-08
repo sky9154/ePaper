@@ -1,7 +1,7 @@
 import functions.mongodb as mongodb
 
 
-async def get ():
+async def get () -> list:
   '''
   取得裝置
   '''
@@ -14,7 +14,7 @@ async def get ():
   return devices
 
 
-async def get_device (name: str):
+async def get_device (name: str) -> list:
   '''
   取得裝置
   '''
@@ -24,7 +24,7 @@ async def get_device (name: str):
   return [] if (result == []) else result[0]
 
 
-async def get_mac (device_list: str):
+async def get_mac (device_list: str) -> str:
   '''
   裝置名稱轉 Mac Address
   '''
@@ -39,7 +39,7 @@ async def get_mac (device_list: str):
   return '' if devices == '' else devices[:-1]
 
 
-async def create (device: dict):
+async def create (device: dict) -> None:
   '''
   建立裝置
   '''
@@ -47,7 +47,7 @@ async def create (device: dict):
   await mongodb.insert('device', device)
 
 
-async def remove (name: str):
+async def remove (name: str) -> None:
   '''
   刪除裝置
   '''
@@ -55,7 +55,7 @@ async def remove (name: str):
   await mongodb.delete('device', {'name': name})
 
 
-async def update (mac: str, device: dict):
+async def update (mac: str, device: dict) -> None:
   '''
   編輯裝置
   '''
@@ -67,7 +67,7 @@ async def update (mac: str, device: dict):
   })
 
 
-async def check_name (name: str):
+async def check_name (name: str) -> bool:
   '''
   檢查裝置名稱是否存在
   '''
@@ -77,7 +77,7 @@ async def check_name (name: str):
   return False if (result == []) else True
 
 
-async def check_mac (mac: str):
+async def check_mac (mac: str) -> bool:
   '''
   檢查 Mac Address 是否存在
   '''
