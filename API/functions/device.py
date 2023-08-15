@@ -34,7 +34,9 @@ async def get_mac (device_list: str) -> str:
 
   for device in device_list:
     result = await get_device(device)
-    devices += f'{result["macAddress"]},'
+
+    if result["macAddress"] != '':
+      devices += f'{result["macAddress"]},'
 
   return '' if devices == '' else devices[:-1]
 

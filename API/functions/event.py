@@ -112,6 +112,6 @@ async def send (devices: str, mode: str, message: str) -> None:
     'message': sheet.get()[:-1] if mode == 'sheet' else message 
   }
 
-  payload_json = json.dumps(payload, ensure_ascii=False).encode('utf8')
+  payload_json = json.dumps(payload, ensure_ascii=False).encode('utf-8')
 
   client.publish('ePaper/send', payload_json)
