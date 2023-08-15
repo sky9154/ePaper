@@ -21,6 +21,7 @@ const Create: FC = () => {
   const [devices, setDevices] = useState<string[]>([]);
   const [mode, setMode] = useState<string>('text');
   const [dateTime, setDateTime] = useState<Dayjs | null>(dayjs(new Date()).second(0));
+  const [checked, setChecked] = useState<boolean>(false);
 
   useEffect(() => {
     Device.get(setDeviceMenu);
@@ -70,7 +71,7 @@ const Create: FC = () => {
     }
 
     if (deviceList || date || mode || message) {
-      Event.create({
+      Event.create(checked, {
         devices: deviceList as string,
         date_time: date as string,
         mode: mode as string,
@@ -102,7 +103,12 @@ const Create: FC = () => {
           devices={devices}
           setDevices={setDevices}
         />
-        <DateTime dateTime={dateTime} setDateTime={setDateTime} />
+        <DateTime
+          dateTime={dateTime}
+          setDateTime={setDateTime}
+          checked={checked}
+          setChecked={setChecked}
+        />
         <Mode mode={mode} setMode={setMode} />
         {Form({ mode })}
         <SubmitButton />
