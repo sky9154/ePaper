@@ -64,6 +64,12 @@ async def send (
   mode: str = Form(...),
   message: str = Form(default='')
 ):
-  devices = device.get_mac(devices)
+  devices = await device.get_mac(devices)
 
   await event.send(devices, mode, message)
+
+
+@router.get('/image')
+async def image():
+  with open('image.txt') as image:
+    return image.read()
