@@ -1,4 +1,5 @@
 import { FC, useState, useMemo, useEffect, useCallback } from 'react';
+import { Dayjs } from 'dayjs';
 import { BiTrash } from 'react-icons/bi';
 import {
   DataGrid,
@@ -13,7 +14,7 @@ import Event from '../../api/Event';
 type EventType = {
   id: string;
   devices: string;
-  datetime: string;
+  datetime: Dayjs;
   mode: string;
   message: string;
 }
@@ -39,9 +40,13 @@ const Grid: FC = () => {
   const field = useMemo<GridColDef<EventType>[]>(
     () => [
       { field: 'id', headerName: '編號', width: 150 },
-      { field: 'devices', headerName: '裝置', width: 150, editable: true },
-      { field: 'datetime', headerName: '排程時間', width: 250, editable: true },
-      { field: 'mode', headerName: '模式', width: 150, editable: true },
+      { field: 'devices', headerName: '裝置', width: 150 },
+      { field: 'datetime', headerName: '排程時間', type: 'dateTime', width: 250, editable: true },
+      { 
+        field: 'mode',
+        headerName: '模式',
+        width: 150
+      },
       { field: 'message', headerName: '訊息', width: 150, editable: true },
       {
         field: 'actions',

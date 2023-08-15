@@ -53,8 +53,21 @@ const Grid: FC = () => {
 
   const field = useMemo<GridColDef<DeviceType>[]>(
     () => [
-      { field: 'name', headerName: '裝置名稱', width: 150, editable: true },
-      { field: 'macAddress', headerName: 'Mac 地址', width: 250 },
+      {
+        field: 'name',
+        headerName: '裝置名稱',
+        align: 'center',
+        headerAlign: 'center',
+        width: 150,
+        editable: true
+      },
+      {
+        field: 'macAddress',
+        headerName: 'Mac 地址',
+        align: 'center',
+        headerAlign: 'center',
+        width: 200
+      },
       {
         field: 'actions',
         type: 'actions',
@@ -85,7 +98,7 @@ const Grid: FC = () => {
           width: {
             xs: '80vw',
             sm: '80vw',
-            md: '650px'
+            md: '600px'
           },
           borderRadius: 4,
           boxShadow: {

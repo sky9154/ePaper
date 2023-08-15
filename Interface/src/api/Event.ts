@@ -1,10 +1,11 @@
 import toast from 'react-hot-toast';
+import dayjs, { Dayjs } from 'dayjs';
 
 
 type EventType = {
   id: string;
   devices: string;
-  datetime: string;
+  datetime: Dayjs;
   mode: string;
   message: string;
 }
@@ -20,27 +21,40 @@ const get = (setEvents: (event: EventType[]) => void) => {
     const result = await response.json();
 
     if (response.ok) {
-      console.log(result.event);
-      
-      setEvents(result.event);
+      const events = result.event.map((event: EventType) => {
+        return {
+          ...event,
+          datetime: dayjs(event.datetime, 'YYYY-MM-DDTHH:mm:ss').toDate()
+        }
+      });
+
+      setEvents(events);
     }
   });
 }
 
-const create = (data: {
-  devices: string,
-  date_time: string,
-  mode: string,
-  message: string
-}) => {
-  const url = `http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/api/event/create`;
+const create = (
+  now: boolean,
+  data: {
+    devices: string,
+    date_time: string,
+    mode: string,
+    message: string
+  }) => {
+  const url = (now) ? 
+  `http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/api/event/send` :
+  `http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/api/event/create`;
 
   const requestOptions = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     },
-    body: new URLSearchParams({
+    body: new URLSearchParams((now) ? {
+      devices: data.devices,
+      mode: data.mode,
+      message: data.message
+    } : {
       devices: data.devices,
       date_time: data.date_time,
       mode: data.mode,
@@ -49,7 +63,7 @@ const create = (data: {
   };
 
   fetch(url, requestOptions).then(() => {
-    toast.success('建立成功!');
+    toast.success(`${(now) ? '發送' : '建立'}成功!`);
   });
 }
 
