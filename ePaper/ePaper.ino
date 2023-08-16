@@ -17,9 +17,7 @@ void setup() {
 
   mqtt.init();
 
-  String macAddress = WiFi.macAddress();
-  ePaper.text("Mac Address: " + macAddress, GxEPD_BLACK, 10, 40);
-  ePaper.draw();
+  ePaper.draw("demo.png");
 }
 
 void loop() {

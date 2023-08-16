@@ -34,15 +34,24 @@ void Display::text(String text, uint16_t font_color, int x, int y) {
   } while (display.nextPage());
 }
 
-void Display::draw() {
-  display.drawPaged(image, 0);
+
+void Display::draw(String image) {
+  display.drawPaged(imageCallback, (const void*)image.c_str());
 }
 
 
-void Display::image(const void*) {
+void Display::imageCallback(const void* pv) {
+  const char* imageStr = reinterpret_cast<const char*>(pv);
+  String image(imageStr);
+
+  getImage(image);
+}
+
+
+void Display::getImage(String image) {
   HTTPClient http;
 
-  String url = "http://192.168.0.38:5000/api/event/image";
+  String url = "http://192.168.0.38:5000/api/event/image/" + image;
 
   http.begin(url);
 

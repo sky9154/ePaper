@@ -14,9 +14,11 @@ class Display {
     void init();
     void clear();
     void text(String text, uint16_t font_color, int x, int y);
-    static void draw();
-    static void image(const void*);
+    static void draw(String image);
     static uint16_t color7(char color);
+  private:
+    static void imageCallback(const void* pv);
+    static void getImage(String image);
 };
 
 #endif

@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Form, HTTPException
 from datetime import datetime
 import functions.event as event
+from functions.ePaper import ePaper
 import functions.device as device
 
 
@@ -69,7 +70,10 @@ async def send (
   await event.send(devices, mode, message)
 
 
-@router.get('/image')
-async def image():
-  with open('image.txt') as image:
-    return image.read()
+@router.get('/image/{image}')
+async def get_image(image: str):
+  image = ePaper(f'temp/upload/{image}')
+  color7 = image.to7color()
+  ret = image.getEpaper(color7)
+
+  return ret
