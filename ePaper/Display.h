@@ -14,8 +14,9 @@ class Display {
     void init();
     void clear();
     void text(String text, uint16_t font_color, int x, int y);
-    void image();
-    uint8_t color7(char color);
+    static void draw();
+    static void image(const void*);
+    static uint16_t color7(char color);
 };
 
 #endif

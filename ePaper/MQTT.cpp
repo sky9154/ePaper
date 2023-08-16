@@ -33,6 +33,6 @@ void MQTT::start(void) {
       }
     }
   }
-  
+
   mqttClient.loop();
 }

@@ -11,16 +11,16 @@ bool startAP            = true;
 
 void Manager::init(void) {
   WiFi.mode(WIFI_STA);
-  
+
   Serial.setDebugOutput(true);
-  
+
   delay(1000);
   pinMode(TRIGGER_PIN, INPUT_PULLUP);
-  
+
   wifiManager.setHostname(AP_HOSTNAME);
   wifiManager.setDebugOutput(true);
   wifiManager.autoConnect(AP_SSID, AP_PASSWORD);
-  
+
   if (WiFi.status() == WL_CONNECTED && wifiManager.getWiFiIsSaved()) {
     Serial.println("晶片存有Wi-Fi連線資料！");
   } else {

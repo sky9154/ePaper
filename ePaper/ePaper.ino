@@ -14,12 +14,12 @@ void setup() {
 
   mqttClient.setServer(MQTT_HOST, MQTT_PORT);
   mqttClient.setCallback(callback);
-  
+
   mqtt.init();
 
   String macAddress = WiFi.macAddress();
-//  ePaper.text("Mac Address: " + macAddress, GxEPD_BLACK, 10, 40);
-  ePaper.image();
+  ePaper.text("Mac Address: " + macAddress, GxEPD_BLACK, 10, 40);
+  ePaper.draw();
 }
 
 void loop() {
