@@ -1,11 +1,10 @@
 #ifndef MQTT_H
 #define MQTT_H
 
-
 #include <WiFi.h>
 #include <PubSubClient.h>
 
-#define MQTT_HOST         "broker.MQTTGO.io"
+#define MQTT_HOST         "192.168.0.38"
 #define MQTT_PORT         1883
 #define MQTT_TOPIC        "ePaper/send"
 

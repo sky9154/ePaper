@@ -13,7 +13,7 @@ void MQTT::init(void) {
       mqttClient.subscribe(MQTT_TOPIC);
     } else {
       Serial.print("連接至 MQTT 伺服器失敗, rc= ");
-      Serial.print(mqttClient.state());
+      Serial.println(mqttClient.state());
       Serial.println(" 5 秒後重新連接");
       delay(5000);
     }

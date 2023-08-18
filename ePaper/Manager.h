@@ -17,8 +17,6 @@ extern unsigned int       startTime;
 extern bool               portalRunning;
 extern bool               startAP;
 
-#define serverName        "http://192.168.0.38:5000"
-
 extern WebServer          webServer;
 extern WiFiManager        wifiManager;
 

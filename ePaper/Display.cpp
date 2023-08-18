@@ -3,6 +3,9 @@
 
 GxEPD2_7C<GxEPD2_730c_GDEY073D46, GxEPD2_730c_GDEY073D46::HEIGHT / 4> display(GxEPD2_730c_GDEY073D46(SS, 17, 16, 4));
 
+String SERVER_HOST = "192.168.0.38";
+String SERVER_PORT = "5000";
+
 void Display::init(void) {
   display.init(115200, true, 2, false);
   display.setRotation(0);
@@ -31,7 +34,7 @@ void Display::imageCallback(const void* pv) {
 void Display::getImage(String image) {
   HTTPClient http;
 
-  String url = "http://192.168.0.38:5000/api/event/image/" + image;
+  String url = "http://" + SERVER_HOST + ":" + SERVER_PORT + "/api/event/image/" + image;
   http.begin(url);
 
   int httpCode = http.GET();

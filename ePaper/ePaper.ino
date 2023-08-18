@@ -1,3 +1,5 @@
+#include <ArduinoJson.h>
+
 #include "Display.h"
 #include "Manager.h"
 #include "MQTT.h"
@@ -16,15 +18,32 @@ void setup() {
   mqttClient.setCallback(callback);
 
   mqtt.init();
-
-  ePaper.draw("demo.png");
 }
+
 
 void loop() {
   manager.start();
   mqtt.start();
 }
 
+
 void callback(char* topic, byte* payload, unsigned int length) {
-  Serial.println(topic);
+  StaticJsonDocument<2048> doc;
+
+  deserializeJson(doc, payload, length);
+  String devices = doc["devices"];
+  String command = doc["mode"];
+  String message = doc["message"];
+
+  doc.clear();
+
+  if (devices.indexOf(WiFi.macAddress()) != -1) {
+    if (command == "command") {
+      if (message == "clear") {
+        ePaper.clear();
+      }
+    } else if (command == "image") {
+      ePaper.draw(message);
+    }
+  }
 }

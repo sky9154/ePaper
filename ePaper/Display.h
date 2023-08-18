@@ -6,12 +6,15 @@
 #include <HTTPClient.h>
 
 
+extern String SERVER_HOST;
+extern String SERVER_PORT;
+
 class Display {
   public:
     void init();
     void clear();
     void draw(String image);
-    
+
   private:
     static void imageCallback(const void* pv);
     static void getImage(String image);
