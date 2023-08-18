@@ -1,11 +1,14 @@
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw, ImageFont, ImageEnhance
 import numpy as np
 import cv2
 
 
 class ePaper ():
-  def __init__ (self, image):
-    self.image = cv2.imread(image)
+  def __init__ (self, image_path):
+    self.image = cv2.imread(image_path)
+    self.image_path = image_path
+    self.bmp = None
+    self.bmp_path = None
 
 
   def put_text (self, text, position, font_color=(0, 0, 0), font_size=30):
@@ -34,33 +37,67 @@ class ePaper ():
 
     self.image = cv2.resize(self.image, dsize)
 
-
-  def to7color (self):
+  def to7color (self, bmp_image):
     '''
     圖像轉成 7 色圖像
     '''
 
-    image = cv2.cvtColor(self.image, cv2.COLOR_BGR2RGB)
+    image = Image.open(self.image_path)
 
-    color7 = []
+    converter = ImageEnhance.Color(image)
+    image = converter.enhance(3)
 
-    for column in range(len(image)):
-      for row in range(len(image[column])):
-        image[column][row][0] = 255 if image[column][row][0] >= 128 else 0
-        image[column][row][1] = 255 if image[column][row][1] >= 192 else 128 if image[column][row][1] >= 128 else 0
-        image[column][row][2] = 255 if image[column][row][2] >= 128 else 0
+    for x in range(image.width):
+      for y in range(image.height):
+        pixel = image.getpixel((x, y))
 
-        color7.append(list(image[column][row]))
+        if pixel[1] > pixel[0] and pixel[1] > pixel[2]:
+          image.putpixel( (x, y), (pixel[1] >> 1, (pixel[1] >> 2) + pixel[1], pixel[2] >> 1))
 
-    return color7
+    expanded = Image.new(image.mode, (image.width, image.height))
+    expanded.paste(image)
+
+    palette_data = [
+      0x00, 0x00, 0x00,
+      0xff, 0xff, 0xff,
+      0x00, 0xff, 0x00,
+      0x00, 0x00, 0xff,
+      0xff, 0x00, 0x00,
+      0xff, 0xff, 0x00,
+      0xff, 0x80, 0x00
+    ]
+
+    palette_data += [0] * (249 * 3 - 1)
+
+    palimage = Image.new('P', (image.width, image.height))
+    palimage.putpalette(palette_data)
+
+    expanded.load()
+    palimage.load()
+
+    if palimage.mode != 'P':
+      raise ValueError('bad mode for palette image')
+    if expanded.mode != 'RGB' and expanded.mode != 'L':
+      raise ValueError('only RGB or L mode images can be quantized to a palette')
+
+    image = expanded.im.convert('P', 1, palimage.im)
+
+    try:
+      new_image =  expanded._new(image)
+    except AttributeError:
+      new_image =  expanded._makeself(image)
+
+    new_image.save(bmp_image)
+    self.bmp_path = bmp_image
+    self.bmp = cv2.imread(bmp_image)
 
 
-  def getEpaper (self, color7):
+  def toText (self):
     '''
-    取得電子紙格式的資料
+    轉成文字
     '''
 
-    color_map = {
+    palette_data = {
       '[0, 0, 0]': 0,
       '[255, 255, 255]': 1,
       '[0, 255, 0]': 2,
@@ -70,9 +107,30 @@ class ePaper ():
       '[255, 128, 0]': 6
     }
 
-    ret = ''
+    image = cv2.cvtColor(self.bmp, cv2.COLOR_BGR2RGB)
 
-    for color in color7:
-      ret += str(color_map[str(color)]) if str(color) in color_map else '1'
+    color7 = []
 
-    return ret
+    for column in range(len(image)):
+      for row in range(len(image[column])):
+        color7.append(image[column][row].tolist())
+
+    return ''.join([str(palette_data.get(str(color), '1')) for color in color7])
+
+
+  def show (self):
+    '''
+    顯示圖像
+    '''
+
+    cv2.imshow('image', self.image)
+    cv2.imshow('bmp', self.bmp)
+    cv2.waitKey(0)
+
+
+  def save (self, name):
+    '''
+    儲存圖像
+    '''
+
+    cv2.imwrite(name, self.image)
