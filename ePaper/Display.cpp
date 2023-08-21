@@ -34,7 +34,7 @@ void Display::imageCallback(const void* pv) {
 void Display::getImage(String image) {
   HTTPClient http;
 
-  String url = "http://" + SERVER_HOST + ":" + SERVER_PORT + "/api/event/image/" + image;
+  String url = "http://" + SERVER_HOST + ":" + SERVER_PORT + "/api/ePaper/image/" + image;
   http.begin(url);
 
   int httpCode = http.GET();
