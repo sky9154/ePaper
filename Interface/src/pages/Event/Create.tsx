@@ -28,6 +28,8 @@ const Create: FC = () => {
   const [mode, setMode] = useState<string>('');
   const [modeMenu, setModeMenu] = useState<ModeType[]>([]);
   const [dateTime, setDateTime] = useState<Dayjs | null>(dayjs(new Date()).second(0));
+  const [uploadImage, setUploadImage] = useState<File | null>(null);
+  const [imageUrl, setImageUrl] = useState<string>('');
 
   useEffect(() => {
     Device.get(setDeviceMenu);
@@ -48,7 +50,7 @@ const Create: FC = () => {
         date_time: date as string,
         mode: mode as string,
         message: message as string
-      });
+      }, uploadImage);
     }
   }
 
@@ -80,7 +82,7 @@ const Create: FC = () => {
           setDateTime={setDateTime}
         />
         <ModeMenu mode={mode} setMode={setMode} modeMenu={modeMenu} />
-        {Form({ mode })}
+        {Form({ mode, setImageUrl, imageUrl, setUploadImage })}
         <SubmitButton />
       </Stack>
     </Box>

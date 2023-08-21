@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Form, HTTPException
+from fastapi import APIRouter, Form, UploadFile, File, HTTPException
 from datetime import datetime
 import functions.event as event
 
@@ -14,12 +14,20 @@ async def get ():
 
 @router.post('/create')
 async def create (
-  devices: str = Form(...),
-  date_time: str = Form(...),
-  mode: str = Form(...),
-  message: str = Form(default='')
+  devices: str = File(..., encoding='utf-8'),
+  date_time: str = File(..., encoding='utf-8'),
+  mode: str = File(..., encoding='utf-8'),
+  message: str = File(default='', encoding='utf-8'),
+  image: UploadFile = File(...)
 ):
   event_id = f'{datetime.strftime(datetime.now(), "%Y%m%d")}{str(len(await event.get()) + 1).zfill(4)}'
+  
+  if (mode == 'image'):
+    image = await image.read()
+    message = event_id
+
+    with open(f'ePaper/image/image/{event_id}.png', 'wb') as buffer:
+      buffer.write(image)
 
   await event.create({
     'id': event_id,

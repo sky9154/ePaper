@@ -88,8 +88,6 @@ async def loop ():
 
         await send(event_id, devices, mode, message)
 
-        await remove(event_id)
-
     sleep(1)
 
 

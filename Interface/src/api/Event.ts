@@ -39,20 +39,21 @@ const create = (
     date_time: string,
     mode: string,
     message: string
-  }) => {
+  },
+  uploadImage: File | null
+) => {
   const url = `http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/api/event/create`;
+  const formData = new FormData();
+
+  formData.append('devices', data.devices);
+  formData.append('date_time', data.date_time);
+  formData.append('mode', data.mode);
+  formData.append('message', data.message);
+  formData.append('image', uploadImage as File);
 
   const requestOptions = {
     method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded'
-    },
-    body: new URLSearchParams({
-      devices: data.devices,
-      date_time: data.date_time,
-      mode: data.mode,
-      message: data.message
-    })
+    body: formData
   };
 
   fetch(url, requestOptions).then(() => {
