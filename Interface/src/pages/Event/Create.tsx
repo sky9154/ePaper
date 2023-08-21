@@ -28,7 +28,6 @@ const Create: FC = () => {
   const [mode, setMode] = useState<string>('');
   const [modeMenu, setModeMenu] = useState<ModeType[]>([]);
   const [dateTime, setDateTime] = useState<Dayjs | null>(dayjs(new Date()).second(0));
-  const [checked, setChecked] = useState<boolean>(false);
 
   useEffect(() => {
     Device.get(setDeviceMenu);
@@ -41,45 +40,10 @@ const Create: FC = () => {
     const data = new FormData(event.currentTarget);
     const date = dayjs(dateTime).format('YYYY-MM-DD HH:mm:ss');
     const deviceList = data.get('devices');
-    let message = '';
-
-    switch (mode) {
-      case 'meet':
-        message = `${data.get('topic')},${data.get('host')},${data.get('date')}`;
-
-        console.table({
-          '裝置': deviceList,
-          '日期': date,
-          '模式': mode,
-          '主題': data.get('topic'),
-          '主持': data.get('host'),
-          '時間': data.get('date')
-        });
-
-        break;
-      case 'sheet':
-        console.table({
-          '裝置': deviceList,
-          '日期': date,
-          '模式': mode
-        });
-
-        break;
-      default:
-        message = data.get('message') as string;
-
-        console.table({
-          '裝置': deviceList,
-          '日期': date,
-          '模式': mode,
-          '訊息': message
-        });
-
-        break;
-    }
+    const message = data.get('message');
 
     if (deviceList || date || mode || message) {
-      Event.create(checked, {
+      Event.create({
         devices: deviceList as string,
         date_time: date as string,
         mode: mode as string,
@@ -114,8 +78,6 @@ const Create: FC = () => {
         <DateTime
           dateTime={dateTime}
           setDateTime={setDateTime}
-          checked={checked}
-          setChecked={setChecked}
         />
         <ModeMenu mode={mode} setMode={setMode} modeMenu={modeMenu} />
         {Form({ mode })}

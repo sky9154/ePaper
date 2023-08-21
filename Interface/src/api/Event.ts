@@ -34,27 +34,20 @@ const get = (setEvents: (events: EventType[]) => void) => {
 }
 
 const create = (
-  now: boolean,
   data: {
     devices: string,
     date_time: string,
     mode: string,
     message: string
   }) => {
-  const url = (now) ? 
-  `http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/api/event/send` :
-  `http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/api/event/create`;
+  const url = `http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/api/event/create`;
 
   const requestOptions = {
     method: 'POST',
     headers: {
       'Content-Type': 'application/x-www-form-urlencoded'
     },
-    body: new URLSearchParams((now) ? {
-      devices: data.devices,
-      mode: data.mode,
-      message: data.message
-    } : {
+    body: new URLSearchParams({
       devices: data.devices,
       date_time: data.date_time,
       mode: data.mode,
@@ -63,7 +56,7 @@ const create = (
   };
 
   fetch(url, requestOptions).then(() => {
-    toast.success(`${(now) ? '發送' : '建立'}成功!`);
+    toast.success(`建立成功!`);
   });
 }
 
