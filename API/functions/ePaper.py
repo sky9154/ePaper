@@ -23,7 +23,7 @@ class ePaper ():
 
     draw = ImageDraw.Draw(image)
 
-    fontStyle = ImageFont.truetype('fonts/msjhbd.ttc', font_size, encoding='utf-8')
+    fontStyle = ImageFont.truetype('fonts/NotoSansTC-Medium.ttf', font_size, encoding='utf-8')
 
     draw.text(position, text, font_color, font=fontStyle)
 
@@ -36,6 +36,7 @@ class ePaper ():
     '''
 
     self.image = cv2.resize(self.image, dsize)
+
 
   def to7color (self, bmp_image):
     '''

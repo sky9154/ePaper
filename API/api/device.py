@@ -24,6 +24,7 @@ async def create (name: str = Form(default=''), mac: str = Form(...)):
     'macAddress': mac
   })
 
+
 @router.delete('/remove')
 async def remove (name: str = Form(...)):
   if not await device.check_name(name):

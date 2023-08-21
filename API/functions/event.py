@@ -1,16 +1,13 @@
-from fastapi import APIRouter
 from dotenv import load_dotenv
 from datetime import datetime
 from time import sleep
 import paho.mqtt.client as mqtt
 import functions.mongodb as mongodb
-import functions.sheet as sheet
+from functions.ePaper import ePaper
 import functions.device as device
 import json
 import os
 
-
-router = APIRouter()
 
 load_dotenv()
 
@@ -89,14 +86,14 @@ async def loop ():
         mode = event['mode']
         message = event['message']
 
-        await send(devices, mode, message)
+        await send(event_id, devices, mode, message)
 
         await remove(event_id)
 
     sleep(1)
 
 
-async def send (devices: str, mode: str, message: str) -> None:
+async def send (event_id: str, devices: str, mode: str, message: str) -> None:
   '''
   發送消息
   '''
@@ -109,8 +106,13 @@ async def send (devices: str, mode: str, message: str) -> None:
   payload = {
     'devices': devices,
     'mode': mode,
-    'message': sheet.get()[:-1] if mode == 'sheet' else message 
+    'message': event_id
   }
+
+  if (mode == 'text'):
+    EPaper = ePaper('ePaper/image/image/bg-img.png')
+    EPaper.put_text(message, (10, 10), (0, 0, 0), 40)
+    EPaper.save(f'ePaper/image/image/{event_id}.png')
 
   payload_json = json.dumps(payload, ensure_ascii=False).encode('utf-8')
 
