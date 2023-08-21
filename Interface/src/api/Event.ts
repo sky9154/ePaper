@@ -10,7 +10,7 @@ type EventType = {
   message: string;
 }
 
-const get = (setEvents: (event: EventType[]) => void) => {
+const get = (setEvents: (events: EventType[]) => void) => {
   const url = `http://${process.env.REACT_APP_HOST}:${process.env.REACT_APP_PORT}/api/event/get`;
 
   const requestOptions = {

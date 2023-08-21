@@ -4,27 +4,35 @@ import Box from '@mui/material/Box';
 import Stack from '@mui/material/Stack';
 import DeviceMenu from '../../components/Event/DeviceMenu';
 import DateTime from '../../components/Event/DateTime';
-import Mode from '../../components/Event/Mode';
+import ModeMenu from '../../components/Event/ModeMenu';
 import Form from '../../components/Event/Form';
 import SubmitButton from '../../components/SubmitButton';
 import Device from '../../api/Device';
 import Event from '../../api/Event';
+import Mode from '../../api/Mode';
 
 
 type DeviceType = {
-  name: string,
-  macAddress: string
+  name: string;
+  macAddress: string;
+}
+
+type ModeType = {
+  name: string;
+  value: string;
 }
 
 const Create: FC = () => {
   const [deviceMenu, setDeviceMenu] = useState<DeviceType[]>([]);
   const [devices, setDevices] = useState<string[]>([]);
-  const [mode, setMode] = useState<string>('text');
+  const [mode, setMode] = useState<string>('');
+  const [modeMenu, setModeMenu] = useState<ModeType[]>([]);
   const [dateTime, setDateTime] = useState<Dayjs | null>(dayjs(new Date()).second(0));
   const [checked, setChecked] = useState<boolean>(false);
 
   useEffect(() => {
     Device.get(setDeviceMenu);
+    Mode.get(setModeMenu);
   }, []);
 
   const send = async (event: FormEvent<HTMLFormElement>) => {
@@ -109,7 +117,7 @@ const Create: FC = () => {
           checked={checked}
           setChecked={setChecked}
         />
-        <Mode mode={mode} setMode={setMode} />
+        <ModeMenu mode={mode} setMode={setMode} modeMenu={modeMenu} />
         {Form({ mode })}
         <SubmitButton />
       </Stack>
