@@ -34,7 +34,7 @@ const Grid: FC = () => {
 
   const deleteDevice = useCallback(
     (name: string) => () => {
-      setTimeout(async () => {
+      setTimeout(() => {
         Device.remove(name);
 
         setDevices((devices) => devices.filter((device) => device.name !== name));
@@ -43,7 +43,7 @@ const Grid: FC = () => {
     []
   );
 
-  const editDevice = async (newRow: DeviceType, oldRow: DeviceType) => {
+  const editDevice = (newRow: DeviceType, oldRow: DeviceType) => {
     if (JSON.stringify(newRow) !== JSON.stringify(oldRow)) {
       Device.update(oldRow.macAddress, newRow.name);
     }

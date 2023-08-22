@@ -58,14 +58,12 @@ const Form: FC<FromProps> = ({ mode, imageUrl, setImageUrl, setUploadImage }) =>
             {(imageUrl === '') ? (
               <Skeleton
                 variant="rounded"
-                width="300px"
                 height="180px"
               />
             ) : (
               <img
                 src={imageUrl}
                 alt="uploadImage"
-                width="300px"
                 height="180px"
               />
             )}

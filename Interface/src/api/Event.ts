@@ -49,7 +49,7 @@ const create = (
   formData.append('date_time', data.date_time);
   formData.append('mode', data.mode);
   formData.append('message', data.message);
-  formData.append('image', uploadImage as File);
+  formData.append('image', uploadImage === null ? '' : uploadImage as File);
 
   const requestOptions = {
     method: 'POST',

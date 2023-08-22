@@ -59,6 +59,7 @@ const Create: FC = () => {
       component="form"
       sx={{
         display: 'flex',
+        height: '100%',
         alignItems: 'center',
         borderRadius: 4,
         boxShadow: '0 4px 8px 0 #BDC9D7'

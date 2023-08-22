@@ -1,6 +1,6 @@
 import { FC, lazy, LazyExoticComponent, Suspense } from 'react';
 import LoadingScreen from './components/LoadingScreen';
-import AppBar from './components/Layouts/AppBar';
+import PageMenu from './components/Layouts/PageMenu';
 
 
 const loadable = (Component: LazyExoticComponent<FC>) => (props: any) => (
@@ -20,30 +20,30 @@ const routes = [
     exact: true,
     path: '/',
     element: (
-      <AppBar>
+      <PageMenu>
         <Home />
-      </AppBar>
+      </PageMenu>
     )
   }, {
     path: '/event',
     element: (
-      <AppBar>
+      <PageMenu>
         <EventGrid />
-      </AppBar>
+      </PageMenu>
     )
   }, {
     path: '/event/create',
     element: (
-      <AppBar>
+      <PageMenu>
         <EventCreate />
-      </AppBar>
+      </PageMenu>
     )
   }, {
     path: '/device',
     element: (
-      <AppBar>
+      <PageMenu>
         <DeviceGrid />
-      </AppBar>
+      </PageMenu>
     )
   }, {
     path: '*',
