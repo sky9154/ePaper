@@ -12,6 +12,21 @@ void Display::init(void) {
 }
 
 
+void Display::create(void) {
+  WiFiClient client;
+  HTTPClient http;
+
+  http.begin(client, "http://" + SERVER_HOST + ":" + SERVER_PORT + "/api/device/create");
+  http.addHeader("Content-Type", "application/x-www-form-urlencoded");
+
+  String macAddress = WiFi.macAddress();
+  String httpRequestData = "mac=" + macAddress;
+
+  http.POST(httpRequestData);
+  http.end();
+}
+
+
 void Display::clear(void) {
   display.clearScreen();
 }

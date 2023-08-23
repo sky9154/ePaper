@@ -24,9 +24,14 @@ void MQTT::init(void) {
 void MQTT::start(void) {
   if (!mqttClient.connected()) {
     while (!mqttClient.connected()) {
-      if (mqttClient.connect("ESP32Client")) {
+      String macAddress = WiFi.macAddress();
+      const char *macAddressStr = macAddress.c_str();
+
+      if (mqttClient.connect(macAddressStr)) {
         Serial.println("重新連接至 MQTT 伺服器");
         mqttClient.subscribe(MQTT_TOPIC);
+
+        delay(1000);
       } else {
         Serial.println("重新連接至 MQTT 伺服器失敗");
         delay(5000);

@@ -11,8 +11,11 @@ MQTT mqtt;
 
 void setup() {
   ePaper.init();
+
   manager.init();
   manager.web();
+
+  ePaper.create();
 
   mqttClient.setServer(MQTT_HOST, MQTT_PORT);
   mqttClient.setCallback(callback);
@@ -38,12 +41,13 @@ void callback(char* topic, byte* payload, unsigned int length) {
   String message = doc["message"];
 
   doc.clear();
-  Serial.println(message);
 
   if (devices.indexOf(WiFi.macAddress()) != -1) {
     if (command == "command") {
       if (message == "clear") {
         ePaper.clear();
+      } else if (message == "qrcode") {
+        ePaper.draw("START");
       }
     } else {
       ePaper.draw(message);

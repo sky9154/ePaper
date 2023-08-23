@@ -12,6 +12,7 @@ extern String SERVER_PORT;
 class Display {
   public:
     void init();
+    void create();
     void clear();
     void draw(String image);
 
