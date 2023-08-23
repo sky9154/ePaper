@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Form, UploadFile, File, HTTPException
 from datetime import datetime
+from functions.ePaper import ePaper
 import functions.event as event
 
 
@@ -18,7 +19,7 @@ async def create (
   date_time: str = File(..., encoding='utf-8'),
   mode: str = File(..., encoding='utf-8'),
   message: str = File(default='', encoding='utf-8'),
-  image: UploadFile = File(...)
+  image: UploadFile = File(default='')
 ):
   event_id = f'{datetime.strftime(datetime.now(), "%Y%m%d")}{str(len(await event.get()) + 1).zfill(4)}'
   
@@ -28,6 +29,10 @@ async def create (
 
     with open(f'ePaper/image/image/{event_id}.png', 'wb') as buffer:
       buffer.write(image)
+
+    EPaper = ePaper(f'ePaper/image/image/{event_id}.png')
+    EPaper.process()
+    EPaper.save(f'ePaper/image/image/{event_id}.png')
 
   await event.create({
     'id': event_id,

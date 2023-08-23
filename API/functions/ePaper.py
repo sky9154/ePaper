@@ -38,6 +38,32 @@ class ePaper ():
     self.image = cv2.resize(self.image, dsize)
 
 
+  def process (self):
+    '''
+    調整影像大小
+    '''
+
+    frame = self.image
+    
+    height, width = frame.shape[:2]
+    aspect_ratio = width / height
+
+    new_width = int(height * 5 / 3)
+    new_aspect_ratio = 5 / 3
+
+    if abs(aspect_ratio - new_aspect_ratio) > 0.001:
+      pad = int((new_width - width) / 2)
+
+      image = np.full((height, new_width, 3), (255, 255, 255), np.uint8)
+      image[:, pad : pad + width] = frame
+    else:
+      image = frame
+
+    resized = cv2.resize(image, (800, 480), interpolation = cv2.INTER_AREA)
+
+    self.image = resized
+
+
   def to7color (self, bmp_image):
     '''
     圖像轉成 7 色圖像

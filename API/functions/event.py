@@ -104,7 +104,7 @@ async def send (event_id: str, devices: str, mode: str, message: str) -> None:
   payload = {
     'devices': devices,
     'mode': mode,
-    'message': event_id
+    'message': message if mode == 'command' else event_id
   }
 
   if (mode == 'text'):
@@ -113,5 +113,6 @@ async def send (event_id: str, devices: str, mode: str, message: str) -> None:
     EPaper.save(f'ePaper/image/image/{event_id}.png')
 
   payload_json = json.dumps(payload, ensure_ascii=False).encode('utf-8')
+  print(payload_json)
 
   client.publish('ePaper/send', payload_json)
