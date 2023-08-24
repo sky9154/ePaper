@@ -40,7 +40,7 @@ const Grid: FC = () => {
 
   const deleteEvent = useCallback(
     (id: string) => () => {
-      setTimeout(async () => {
+      setTimeout(() => {
         Event.remove(id);
 
         setEvents((events) => events.filter((event) => event.id !== id));

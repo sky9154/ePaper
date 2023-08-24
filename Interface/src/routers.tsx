@@ -13,6 +13,7 @@ const Home = loadable(lazy(() => import('./pages/Home')));
 const EventGrid = loadable(lazy(() => import('./pages/Event/Grid')));
 const EventCreate = loadable(lazy(() => import('./pages/Event/Create')));
 const DeviceGrid = loadable(lazy(() => import('./pages/DeviceGrid')));
+const Canvas = loadable(lazy(() => import('./pages/Canvas')));
 const Error = loadable(lazy(() => import('./pages/404')));
 
 const routes = [
@@ -43,6 +44,13 @@ const routes = [
     element: (
       <PageMenu>
         <DeviceGrid />
+      </PageMenu>
+    )
+  }, {
+    path: '/canvas',
+    element: (
+      <PageMenu>
+        <Canvas />
       </PageMenu>
     )
   }, {

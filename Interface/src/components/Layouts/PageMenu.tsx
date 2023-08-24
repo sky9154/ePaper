@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import {
   BiMenu,
   BiX,
+  BiPalette,
   BiDevices,
   BiCalendarEdit,
   BiCalendarPlus
@@ -32,6 +33,10 @@ const PageMenu = ({ children }: Props) => {
   };
 
   const pages = [{
+    icon: <BiPalette />,
+    name: '畫布',
+    path: '/canvas'
+  }, {
     icon: <BiCalendarEdit />,
     name: '排程管理',
     path: '/event'
