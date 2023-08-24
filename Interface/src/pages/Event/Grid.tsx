@@ -1,6 +1,6 @@
 import { FC, useState, useMemo, useEffect, useCallback } from 'react';
 import { Dayjs } from 'dayjs';
-import { BiTrash } from 'react-icons/bi';
+import { BiTrash, BiImage } from 'react-icons/bi';
 import {
   DataGrid,
   GridActionsCellItem,
@@ -8,6 +8,7 @@ import {
   GridToolbar
 } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
+import Dialog from '@mui/material/Dialog';
 import Event from '../../api/Event';
 
 
@@ -21,10 +22,21 @@ type EventType = {
 
 const Grid: FC = () => {
   const [events, setEvents] = useState<EventType[]>([]);
+  const [imageUrl, setImageUrl] = useState<string>('');
+  const [viewerOpen, setViewerOpen] = useState<boolean>(false);
 
   useEffect(() => {
     Event.get(setEvents);
   }, []);
+
+  const openImageViewer = (imageUrl: string) => {
+    setImageUrl(`data:image/png;base64,${imageUrl}`);
+    setViewerOpen(true);
+  };
+
+  const closeImageViewer = () => {
+    setViewerOpen(false);
+  };
 
   const deleteEvent = useCallback(
     (id: string) => () => {
@@ -42,13 +54,25 @@ const Grid: FC = () => {
       { field: 'id', headerName: '編號', width: 150 },
       { field: 'devices', headerName: '裝置', width: 150 },
       { field: 'datetime', headerName: '排程時間', type: 'dateTime', width: 250, editable: true },
-      { 
+      {
         field: 'mode',
         headerName: '模式',
         width: 150
-      },
-      { field: 'message', headerName: '訊息', width: 150, editable: true },
-      {
+      }, {
+        field: 'message',
+        type: 'actions',
+        headerName: '訊息',
+        width: 150,
+        getActions: (params) => [
+          <GridActionsCellItem
+            icon={<BiImage style={{
+              fontSize: '20px'
+            }} />}
+            label="image"
+            onClick={() => openImageViewer(params.row.message)}
+          />
+        ]
+      }, {
         field: 'actions',
         type: 'actions',
         headerName: '功能',
@@ -100,6 +124,9 @@ const Grid: FC = () => {
             fontSize: '16px'
           }} />
       </Box>
+      <Dialog onClose={closeImageViewer} open={viewerOpen}>
+        <img src={imageUrl} alt="message" />
+      </Dialog>
     </Box>
   );
 }

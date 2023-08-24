@@ -9,7 +9,7 @@ import {
   GridToolbarFilterButton
 } from '@mui/x-data-grid';
 import Box from '@mui/material/Box';
-import Device from '../../api/Device';
+import Device from '../api/Device';
 
 
 type DeviceType = {
@@ -25,7 +25,7 @@ const CustomToolbar: FC = () => (
   </GridToolbarContainer>
 );
 
-const Grid: FC = () => {
+const DeviceGrid: FC = () => {
   const [devices, setDevices] = useState<DeviceType[]>([]);
 
   useEffect(() => {
@@ -125,4 +125,4 @@ const Grid: FC = () => {
 }
 
 
-export default Grid;
+export default DeviceGrid;

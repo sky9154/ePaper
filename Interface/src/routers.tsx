@@ -12,7 +12,7 @@ const loadable = (Component: LazyExoticComponent<FC>) => (props: any) => (
 const Home = loadable(lazy(() => import('./pages/Home')));
 const EventGrid = loadable(lazy(() => import('./pages/Event/Grid')));
 const EventCreate = loadable(lazy(() => import('./pages/Event/Create')));
-const DeviceGrid = loadable(lazy(() => import('./pages/Device/Grid')));
+const DeviceGrid = loadable(lazy(() => import('./pages/DeviceGrid')));
 const Error = loadable(lazy(() => import('./pages/404')));
 
 const routes = [
