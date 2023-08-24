@@ -6,6 +6,8 @@ import functions.mongodb as mongodb
 from functions.ePaper import ePaper
 import functions.device as device
 import json
+import base64
+import cv2
 import os
 
 
@@ -20,6 +22,26 @@ async def get () -> list:
   '''
   
   events = await mongodb.find('event', { 'state': True })
+
+  for i in range(len(events)):
+    name = events[i]['id']
+    mode = events[i]['mode']
+    message = events[i]['message']
+
+    if mode == 'command':
+      if message == 'clear':
+        image = cv2.imread('ePaper/image/image/bg-img.png')
+      elif message == 'qrcode':
+        image = cv2.imread('ePaper/image/image/START.png')
+    else:
+      image = cv2.imread(f'ePaper/image/image/{name}.png')
+
+    success, buffer = cv2.imencode('.png', image)
+
+    image = buffer.tobytes()
+    image = base64.b64encode(image).decode('utf-8')
+    
+    events[i]['message'] = image
 
   return events
 
@@ -106,11 +128,6 @@ async def send (event_id: str, devices: str, mode: str, message: str) -> None:
     'mode': mode,
     'message': message if mode == 'command' else event_id
   }
-
-  if (mode == 'text'):
-    EPaper = ePaper('ePaper/image/image/bg-img.png')
-    EPaper.put_text(message, (10, 10), (0, 0, 0), 40)
-    EPaper.save(f'ePaper/image/image/{event_id}.png')
 
   payload_json = json.dumps(payload, ensure_ascii=False).encode('utf-8')
   print(payload_json)

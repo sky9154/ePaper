@@ -40,7 +40,7 @@ class ePaper ():
 
   def process (self):
     '''
-    調整影像大小
+    正規化圖像尺寸
     '''
 
     frame = self.image
@@ -79,7 +79,7 @@ class ePaper ():
         pixel = image.getpixel((x, y))
 
         if pixel[1] > pixel[0] and pixel[1] > pixel[2]:
-          image.putpixel( (x, y), (pixel[1] >> 1, (pixel[1] >> 2) + pixel[1], pixel[2] >> 1))
+          image.putpixel((x, y), (pixel[1] >> 1, (pixel[1] >> 2) + pixel[1], pixel[2] >> 1))
 
     expanded = Image.new(image.mode, (image.width, image.height))
     expanded.paste(image)

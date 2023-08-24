@@ -33,6 +33,10 @@ async def create (
     EPaper = ePaper(f'ePaper/image/image/{event_id}.png')
     EPaper.process()
     EPaper.save(f'ePaper/image/image/{event_id}.png')
+  elif (mode == 'text'):
+    EPaper = ePaper('ePaper/image/image/bg-img.png')
+    EPaper.put_text(message, (10, 10), (0, 0, 0), 40)
+    EPaper.save(f'ePaper/image/image/{event_id}.png')
 
   await event.create({
     'id': event_id,
