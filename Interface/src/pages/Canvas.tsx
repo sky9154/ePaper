@@ -12,10 +12,7 @@ const Canvas: FC = () => {
       alignItems="center"
       spacing={2}
     >
-      <MainCanvas
-        width={800}
-        height={480}
-      />
+      <MainCanvas width={800} height={480} />
     </Stack>
 
   );

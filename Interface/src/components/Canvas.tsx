@@ -1,5 +1,15 @@
-import { useRef, useState, MouseEvent, ChangeEvent } from 'react';
-import { BiEraser, BiSolidCircle } from 'react-icons/bi';
+import {
+  useRef,
+  useState,
+  MouseEvent,
+  ChangeEvent
+} from 'react';
+import {
+  BiSolidCircle,
+  BiRefresh,
+  BiRotateLeft,
+  BiRotateRight
+} from 'react-icons/bi';
 import { HexColorPicker } from 'react-colorful';
 import IconButton from '@mui/material/IconButton';
 import Paper from '@mui/material/Paper';
@@ -7,6 +17,7 @@ import Box from '@mui/material/Box';
 import Popover from '@mui/material/Popover';
 import OutlinedInput from '@mui/material/OutlinedInput';
 import InputAdornment from '@mui/material/InputAdornment';
+import CanvasClass from '../functions/Canvas';
 
 
 interface CanvasProps {
@@ -16,42 +27,19 @@ interface CanvasProps {
 
 const Canvas: React.FC<CanvasProps> = ({ width, height }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [colorPicker, setColorPicker] = useState<null | HTMLElement>(null);
+  const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
   const [drawing, setDrawing] = useState<boolean>(false);
+  const [colorPicker, setColorPicker] = useState<null | HTMLElement>(null);
+  const [point, setPoint] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
+  const [tool, setTool] = useState<string>('pencil');
   const [penColor, setPenColor] = useState<string>('#000000');
   const [penSize, setPenSize] = useState<number>(10);
-  const [ctx, setCtx] = useState<CanvasRenderingContext2D | null>(null);
+  const [savedImage, setSavedImage] = useState<HTMLImageElement>(new Image());
+  const [imageIndex, setImageIndex] = useState<number>(0);
+  const [imageArray, setImageArray] = useState<HTMLImageElement[]>([]);
 
-  const draw = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    if (!drawing || !ctx) return;
-
-    ctx.lineCap = 'round';
-    ctx.lineJoin = 'round';
-    ctx.strokeStyle = penColor;
-    ctx.lineWidth = penSize;
-
-    ctx.lineTo(event.nativeEvent.offsetX, event.nativeEvent.offsetY);
-    ctx.stroke();
-  };
-
-  const startDrawing = (event: React.MouseEvent<HTMLCanvasElement>) => {
-    if (ctx) {
-      ctx.beginPath();
-
-      ctx.moveTo(event.nativeEvent.offsetX, event.nativeEvent.offsetY);
-      setDrawing(true);
-    }
-  };
-
-  const endDrawing = () => {
-    setDrawing(false);
-  };
-
-  const clearCanvas = () => {
-    if (ctx) {
-      ctx.clearRect(0, 0, width, height);
-    }
-  };
+  const canvas = new CanvasClass(canvasRef, ctx);
+  canvas.setSize(800, 480);
 
   const handleCanvasRef = (canvas: HTMLCanvasElement | null) => {
     if (canvas) {
@@ -63,9 +51,100 @@ const Canvas: React.FC<CanvasProps> = ({ width, height }) => {
     }
   };
 
+  const toolSelected = (newTool: string) => {
+    if (newTool !== tool) {
+      setTool(newTool);
+    }
+  };
+
+  const draw = (event: React.MouseEvent<HTMLCanvasElement>) => {
+    if (drawing && ctx) {
+      canvas.setLastPoint({
+        x: event.nativeEvent.offsetX,
+        y: event.nativeEvent.offsetY
+      });
+
+      canvas.clearCanvas();
+      canvas.restore(savedImage);
+
+      switch (tool) {
+        case 'pencil':
+          canvas.draw();
+
+          break;
+        case 'eraser':
+          canvas.clear();
+
+          break;
+        case 'line':
+          canvas.drawLine(point);
+
+          break;
+        case 'rectangle':
+          canvas.drawRectangle(point);
+
+          break;
+        case 'ellipse':
+          canvas.drawOval(point);
+
+          break;
+      }
+
+      ctx.stroke();
+    }
+  };
+
+  const startDrawing = (event: MouseEvent<HTMLCanvasElement>) => {
+    if (ctx) {
+      ctx.lineCap = 'round';
+      ctx.lineJoin = 'round';
+      ctx.strokeStyle = penColor;
+      ctx.lineWidth = penSize;
+
+      setPoint({
+        x: event.nativeEvent.offsetX,
+        y: event.nativeEvent.offsetY
+      });
+
+      ctx.beginPath();
+      ctx.moveTo(event.nativeEvent.offsetX, event.nativeEvent.offsetY);
+
+      canvas.saveCanvas(setSavedImage);
+      setDrawing(true);
+    }
+  };
+
+  const endDrawing = () => {
+    setDrawing(false);
+  };
+
+  if (imageArray.length === 0) {
+    const cc = canvas.canvasRef.current;
+
+    if (cc) {
+      const saved = new Image();
+      saved.src = cc.toDataURL('image/png');
+      imageArray.push(saved);
+      setImageArray(imageArray);
+    }
+  }
+
+  const pushImageArray = () => {
+    const cvs = canvas.canvasRef.current;
+
+    if (cvs) {
+      const saved = new Image();
+      saved.src = cvs.toDataURL('image/png');
+      const newImageArray = imageArray.push(saved);
+      setImageArray(imageArray);
+      setImageIndex(newImageArray - 1);
+    }
+  }
+
   return (
     <Paper elevation={3} style={{ padding: '16px' }}>
       <canvas
+        id="canvas"
         ref={(node) => {
           canvasRef.current = node;
           handleCanvasRef(node);
@@ -80,6 +159,7 @@ const Canvas: React.FC<CanvasProps> = ({ width, height }) => {
         onMouseMove={draw}
         onMouseUp={endDrawing}
         onMouseOut={endDrawing}
+        onMouseUpCapture={pushImageArray}
       />
       <Box>
         <IconButton
@@ -117,11 +197,33 @@ const Canvas: React.FC<CanvasProps> = ({ width, height }) => {
             }
           }}
         />
+        {canvas.tools.map((item, index) => (
+          <IconButton
+            size="large"
+            key={index}
+            onClick={() => toolSelected(item.name)}
+            disabled={tool === item.name}
+          >
+            {item.icon}
+          </IconButton>
+        ))}
         <IconButton
           size="large"
-          onClick={clearCanvas}
+          onClick={() => canvas.prevDraw(imageArray, imageIndex, setImageIndex)}
         >
-          <BiEraser />
+          <BiRotateLeft />
+        </IconButton>
+        <IconButton
+          size="large"
+          onClick={() => canvas.nextDraw(imageArray, imageIndex, setImageIndex)}
+        >
+          <BiRotateRight />
+        </IconButton>
+        <IconButton
+          size="large"
+          onClick={() => canvas.initCanvas(setImageIndex, setImageArray)}
+        >
+          <BiRefresh />
         </IconButton>
       </Box>
     </Paper>
