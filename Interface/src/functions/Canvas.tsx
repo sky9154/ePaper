@@ -14,8 +14,10 @@ class Canvas {
   ctx: CanvasRenderingContext2D | null;
   width: number;
   height: number;
+  penSize: number;
+  penColor: string;
   tools: {
-    name: string,
+    name: string;
     icon: JSX.Element;
   }[];
   lastPoint: {
@@ -31,6 +33,8 @@ class Canvas {
     this.ctx = ctx;
     this.width = 0;
     this.height = 0;
+    this.penSize = 0;
+    this.penColor = '#000000';
     this.lastPoint = { x: 0, y: 0 };
     this.tools = [{
       name: 'pencil',
@@ -53,9 +57,14 @@ class Canvas {
     }]
   }
 
-  setSize(width: number, height: number) {
+  setSize(width: number, height: number, penSize: number) {
     this.width = width;
     this.height = height;
+    this.penSize = penSize;
+  }
+
+  setPenColor(penColor: string) {
+    this.penColor = penColor;
   }
 
   setLastPoint(lastPoint: { x: number, y: number }) {
@@ -97,11 +106,14 @@ class Canvas {
   ) {
     if (this.ctx) {
       this.ctx.clearRect(0, 0, this.width, this.height);
+      this.ctx.fillStyle = '#FFFFFF';
+      this.ctx.fillRect(0, 0, this.width, this.height);
+      this.ctx.fillStyle = this.penColor;
+
       setImageIndex(0);
       setImageArray([]);
     }
   };
-
 
   prevDraw(
     array: HTMLImageElement[],
@@ -111,6 +123,7 @@ class Canvas {
     if (index - 1 > -1) {
       this.clearCanvas();
       this.restore(array[index - 1]);
+
       setImageIndex(index - 1);
     }
   }
@@ -123,7 +136,25 @@ class Canvas {
     if (index + 1 < array.length) {
       this.clearCanvas();
       this.restore(array[index + 1]);
+
       setImageIndex(index + 1);
+    }
+  }
+
+  download() {
+    const canvas = this.canvasRef.current;
+    const today = new Date();
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const fileName = `${year}${month}${day}.png`;
+
+    if (canvas) {
+      const imageUrl = document.createElement('a');
+
+      imageUrl.download = fileName;
+      imageUrl.href = canvas.toDataURL('image/png');
+      imageUrl.click();
     }
   }
 
@@ -179,9 +210,12 @@ class Canvas {
     }
   };
 
-  addText(point: { x: number, y: number }) {
+  addText(text: string, point: { x: number, y: number }) {
     if (this.ctx) {
-      this.ctx.fillText("Sample String", point.x, point.y);
+      this.ctx.textBaseline = 'top';
+      this.ctx.textAlign = 'left';
+      this.ctx.font = `${this.penSize}px sans-serif`;
+      this.ctx.fillText(text, point.x, point.y);
     }
   }
 }

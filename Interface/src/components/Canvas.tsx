@@ -8,7 +8,8 @@ import {
   BiSolidCircle,
   BiRefresh,
   BiRotateLeft,
-  BiRotateRight
+  BiRotateRight,
+  BiDownload
 } from 'react-icons/bi';
 import { HexColorPicker } from 'react-colorful';
 import IconButton from '@mui/material/IconButton';
@@ -33,19 +34,26 @@ const Canvas: React.FC<CanvasProps> = ({ width, height }) => {
   const [point, setPoint] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
   const [tool, setTool] = useState<string>('pencil');
   const [penColor, setPenColor] = useState<string>('#000000');
+  const [inputState, setInputState] = useState<boolean>(false);
   const [penSize, setPenSize] = useState<number>(10);
   const [savedImage, setSavedImage] = useState<HTMLImageElement>(new Image());
   const [imageIndex, setImageIndex] = useState<number>(0);
   const [imageArray, setImageArray] = useState<HTMLImageElement[]>([]);
 
   const canvas = new CanvasClass(canvasRef, ctx);
-  canvas.setSize(800, 480);
+  canvas.setSize(800, 480, penSize);
+  canvas.setPenColor(penColor);
 
   const handleCanvasRef = (canvas: HTMLCanvasElement | null) => {
     if (canvas) {
       const context = canvas.getContext('2d');
 
       if (context) {
+        if (!ctx) {
+          context.fillStyle = '#FFFFFF';
+          context.fillRect(0, 0, canvas.width, canvas.height);
+          context.fillStyle = penColor;
+        }
         setCtx(context);
       }
     }
@@ -106,6 +114,35 @@ const Canvas: React.FC<CanvasProps> = ({ width, height }) => {
         y: event.nativeEvent.offsetY
       });
 
+      if (tool === 'text' && !inputState) {
+        setInputState(true);
+
+        const input = document.createElement('input');
+
+        input.style.position = 'fixed';
+        input.style.fontSize = `${penSize}px`;
+        input.style.width = `${penSize * 10}px`;
+        input.style.maxWidth = '500px';
+        input.style.left = `${event.clientX - 4}px`;
+        input.style.top = `${event.clientY - 4}px`;
+        input.style.zIndex = '100';
+
+        input.onchange = () => {
+          canvas.addText(input.value, {
+            x: event.nativeEvent.offsetX,
+            y: event.nativeEvent.offsetY
+          });
+
+          document.body.removeChild(input);
+
+          setInputState(false);
+          pushImageArray();
+        };
+
+        document.body.appendChild(input);
+        input.focus();
+      }
+
       ctx.beginPath();
       ctx.moveTo(event.nativeEvent.offsetX, event.nativeEvent.offsetY);
 
@@ -119,22 +156,22 @@ const Canvas: React.FC<CanvasProps> = ({ width, height }) => {
   };
 
   if (imageArray.length === 0) {
-    const cc = canvas.canvasRef.current;
+    const context = canvas.canvasRef.current;
 
-    if (cc) {
+    if (context) {
       const saved = new Image();
-      saved.src = cc.toDataURL('image/png');
+      saved.src = context.toDataURL('image/png');
       imageArray.push(saved);
       setImageArray(imageArray);
     }
   }
 
   const pushImageArray = () => {
-    const cvs = canvas.canvasRef.current;
+    const context = canvas.canvasRef.current;
 
-    if (cvs) {
+    if (context) {
       const saved = new Image();
-      saved.src = cvs.toDataURL('image/png');
+      saved.src = context.toDataURL('image/png');
       const newImageArray = imageArray.push(saved);
       setImageArray(imageArray);
       setImageIndex(newImageArray - 1);
@@ -144,7 +181,6 @@ const Canvas: React.FC<CanvasProps> = ({ width, height }) => {
   return (
     <Paper elevation={3} style={{ padding: '16px' }}>
       <canvas
-        id="canvas"
         ref={(node) => {
           canvasRef.current = node;
           handleCanvasRef(node);
@@ -224,6 +260,12 @@ const Canvas: React.FC<CanvasProps> = ({ width, height }) => {
           onClick={() => canvas.initCanvas(setImageIndex, setImageArray)}
         >
           <BiRefresh />
+        </IconButton>
+        <IconButton
+          size="large"
+          onClick={() => canvas.download()}
+        >
+          <BiDownload />
         </IconButton>
       </Box>
     </Paper>
