@@ -1,10 +1,12 @@
 import { MutableRefObject } from 'react';
 import {
-  BiEraser,
+  BiPointer,
   BiPencil,
+  BiDroplet,
+  BiEraser,
+  BiMinus,
   BiSquare,
   BiCircle,
-  BiMinus,
   BiText
 } from 'react-icons/bi';
 
@@ -37,8 +39,14 @@ class Canvas {
     this.penColor = '#000000';
     this.lastPoint = { x: 0, y: 0 };
     this.tools = [{
+      name: 'pointer',
+      icon: <BiPointer />
+    }, {
       name: 'pencil',
       icon: <BiPencil />
+    }, {
+      name: 'droplet',
+      icon: <BiDroplet />
     }, {
       name: 'eraser',
       icon: <BiEraser />
@@ -163,6 +171,19 @@ class Canvas {
 
     if (this.ctx) {
       this.ctx.lineTo(lastPoint.x, lastPoint.y);
+    }
+  }
+
+  getColor(point: { x: number, y: number }, setPenColor: (penColor: string) => void) {
+    if (this.ctx) {
+      const imageData = this.ctx.getImageData(point.x, point.y, 1, 1).data;
+      const color = {
+        red: imageData[0],
+        green: imageData[1],
+        blue: imageData[2]
+      }
+
+      setPenColor(`#${(color.red << 16 || color.green << 8 || color.blue).toString(16).padStart(6, '0')}`);
     }
   }
 

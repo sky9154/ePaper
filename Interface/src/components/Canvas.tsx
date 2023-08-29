@@ -32,7 +32,7 @@ const Canvas: React.FC<CanvasProps> = ({ width, height }) => {
   const [drawing, setDrawing] = useState<boolean>(false);
   const [colorPicker, setColorPicker] = useState<null | HTMLElement>(null);
   const [point, setPoint] = useState<{ x: number, y: number }>({ x: 0, y: 0 });
-  const [tool, setTool] = useState<string>('pencil');
+  const [tool, setTool] = useState<string>('pointer');
   const [penColor, setPenColor] = useState<string>('#000000');
   const [inputState, setInputState] = useState<boolean>(false);
   const [penSize, setPenSize] = useState<number>(10);
@@ -46,7 +46,7 @@ const Canvas: React.FC<CanvasProps> = ({ width, height }) => {
 
   const handleCanvasRef = (canvas: HTMLCanvasElement | null) => {
     if (canvas) {
-      const context = canvas.getContext('2d');
+      const context = canvas.getContext('2d', { willReadFrequently: true });
 
       if (context) {
         if (!ctx) {
@@ -109,10 +109,12 @@ const Canvas: React.FC<CanvasProps> = ({ width, height }) => {
       ctx.strokeStyle = penColor;
       ctx.lineWidth = penSize;
 
-      setPoint({
+      const nowPoint = {
         x: event.nativeEvent.offsetX,
         y: event.nativeEvent.offsetY
-      });
+      }
+
+      setPoint(nowPoint);
 
       if (tool === 'text' && !inputState) {
         setInputState(true);
@@ -128,10 +130,7 @@ const Canvas: React.FC<CanvasProps> = ({ width, height }) => {
         input.style.zIndex = '100';
 
         input.onchange = () => {
-          canvas.addText(input.value, {
-            x: event.nativeEvent.offsetX,
-            y: event.nativeEvent.offsetY
-          });
+          canvas.addText(input.value, nowPoint);
 
           document.body.removeChild(input);
 
@@ -141,6 +140,8 @@ const Canvas: React.FC<CanvasProps> = ({ width, height }) => {
 
         document.body.appendChild(input);
         input.focus();
+      } else if (tool === 'droplet') {
+        canvas.getColor(nowPoint, setPenColor);
       }
 
       ctx.beginPath();
